@@ -16,6 +16,7 @@ const Hero = () => {
   const videoTimeLineRef = useRef<gsap.core.Timeline | null>(null);
   useGSAP(
     () => {
+      if (!container.current) return;
       const heroSplit = new SplitText(".title", { type: "chars, words" });
       const paragraphSplit = new SplitText(".hero-paragraph", {
         type: "lines",
@@ -43,7 +44,7 @@ const Hero = () => {
       gsap
         .timeline({
           scrollTrigger: {
-            trigger: "#hero",
+            trigger: container.current,
             start: "top top",
             end: "bottom top",
             scrub: true,
