@@ -92,6 +92,7 @@ const Hero = () => {
         <h1 className="md:text-9xl text-5xl title  tracking-wide pt-16 md:pt-20 text-center font-semibold opacity-0 z-14">
           BOTANIQ
         </h1>
+
         <p className="text-sm mx-auto pt-18 md:hidden text-white/90 hero-paragraph leading-relaxed px-4  max-w-lg opacity-0">
           Indulge in a symphony of flavor where every cocktail is more than a
           drink—it's a crafted experience. At Velvet Pour, we blend the finest

@@ -1,17 +1,7 @@
 import type { Metadata } from "next";
-import { Playfair, Lora, Cinzel } from "next/font/google";
+import { Cinzel } from "next/font/google";
 import "./globals.css";
 
-const playfair = Playfair({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 const cinzel = Cinzel({
   variable: "--font-cinzel",
   subsets: ["latin"],
@@ -29,10 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${cinzel.className} antialiased overflow-x-clip`}>
-        {children}
-      </body>
+    <html lang="en" className={`${cinzel.className}`}>
+      <body className="antialiased overflow-x-clip">{children}</body>
     </html>
   );
 }

@@ -5,14 +5,16 @@ import gsap from "gsap";
 import Hero from "./components/Hero";
 import Practice from "./components/Practice";
 import Cocktails from "./components/Cocktails";
+import About from "./components/About";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+// gsap.registerPlugin(ScrollTrigger, SplitText);
 export default function Home() {
   return (
     <div className="">
       <NavBar />
       <Hero />
       <Cocktails />
+      <About />
     </div>
   );
 }
