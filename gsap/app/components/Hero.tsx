@@ -53,7 +53,7 @@ const Hero = () => {
 
         .to(".left-leaf", { y: -200, rotation: -45, scale: 1.2 }, 0);
 
-      const startValue = isMobile ? "top 50%" : "center 35%";
+      const startValue = isMobile ? "top 50%" : "top top ";
       const endValue = isMobile ? "120% top" : "bottom top";
 
       const tl = gsap.timeline({
