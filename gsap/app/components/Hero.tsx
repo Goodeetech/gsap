@@ -18,71 +18,69 @@ const Hero = () => {
     () => {
       if (!container.current) return;
 
-      document.fonts.ready.then(() => {
-        const heroSplit = new SplitText(".title", { type: "chars, words" });
-        const paragraphSplit = new SplitText(".hero-paragraph", {
-          type: "lines",
-        });
-
-        gsap.set(".title", { opacity: 1 });
-        gsap.set(".hero-paragraph", { opacity: 1 });
-
-        gsap.from(heroSplit.chars, {
-          yPercent: 100,
-          duration: 1.8,
-          opacity: 0,
-          ease: "expo.out",
-          stagger: 0.05,
-        });
-        gsap.from(paragraphSplit.lines, {
-          opacity: 0,
-          yPercent: 100,
-          duration: 1.8,
-          ease: "expo.out",
-          stagger: 0.06,
-          delay: 1,
-        });
-
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: container.current,
-              start: "top top",
-              end: "bottom top",
-              scrub: true,
-            },
-          })
-          .to(".right-leaf", { y: 200, rotation: 45, scale: 1.2 }, 0)
-
-          .to(".left-leaf", { y: -200, rotation: -45, scale: 1.2 }, 0);
-
-        const startValue = isMobile ? "top 50%" : "top top ";
-        const endValue = isMobile ? "120% top" : "bottom top";
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: ".viideo",
-            start: startValue,
-            end: endValue,
-            scrub: true,
-            pin: true,
-            anticipatePin: 1,
-            onEnter: () => videoRef.current?.play(),
-            onEnterBack: () => videoRef.current?.play(),
-            onLeave: () => videoRef.current?.pause(),
-            onLeaveBack: () => videoRef.current?.pause(),
-          },
-        });
-
-        if (videoRef.current) {
-          videoRef.current.currentTime = 0;
-          videoRef.current.onloadedmetadata = () => {
-            tl.to(videoRef.current, {
-              currentTime: videoRef.current?.duration,
-            });
-          };
-        }
+      const heroSplit = new SplitText(".title", { type: "chars, words" });
+      const paragraphSplit = new SplitText(".hero-paragraph", {
+        type: "lines",
       });
+
+      gsap.set(".title", { opacity: 1 });
+      gsap.set(".hero-paragraph", { opacity: 1 });
+
+      gsap.from(heroSplit.chars, {
+        yPercent: 100,
+        duration: 1.8,
+        opacity: 0,
+        ease: "expo.out",
+        stagger: 0.05,
+      });
+      gsap.from(paragraphSplit.lines, {
+        opacity: 0,
+        yPercent: 100,
+        duration: 1.8,
+        ease: "expo.out",
+        stagger: 0.06,
+        delay: 1,
+      });
+
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: container.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        })
+        .to(".right-leaf", { y: 200, rotation: 45, scale: 1.2 }, 0)
+
+        .to(".left-leaf", { y: -200, rotation: -45, scale: 1.2 }, 0);
+
+      const startValue = isMobile ? "top 50%" : "top top ";
+      const endValue = isMobile ? "120% top" : "bottom top";
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".viideo",
+          start: startValue,
+          end: endValue,
+          scrub: true,
+          pin: true,
+          anticipatePin: 1,
+          onEnter: () => videoRef.current?.play(),
+          onEnterBack: () => videoRef.current?.play(),
+          onLeave: () => videoRef.current?.pause(),
+          onLeaveBack: () => videoRef.current?.pause(),
+        },
+      });
+
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.onloadedmetadata = () => {
+          tl.to(videoRef.current, {
+            currentTime: videoRef.current?.duration,
+          });
+        };
+      }
     },
     { scope: container }
   );
