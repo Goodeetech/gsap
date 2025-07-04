@@ -86,14 +86,14 @@ const About = () => {
                   alt="face1"
                   height={40}
                   width={40}
-                  className="rounded-full  top-0 left-0 object-fit -mx-2 z-1"
+                  className="rounded-full  top-0 left-0 -mx-2 z-1"
                 />
                 <Image
                   src={"/face2.jpg"}
                   alt="face2"
                   height={40}
                   width={40}
-                  className="rounded-full  top-0 left-0  object-fit -mx-2 z-2"
+                  className="rounded-full  top-0 left-0  -mx-2 z-2"
                 />
 
                 <Image
@@ -101,7 +101,7 @@ const About = () => {
                   alt="face4"
                   height={40}
                   width={40}
-                  className="rounded-full  object-fit -mx-2 z-3"
+                  className="rounded-full   -mx-2 z-3"
                 />
                 <Image
                   src={"/face3.png"}
