@@ -122,7 +122,7 @@ const About = () => {
       <div className="grid  top-grid md:grid-cols-8 grid-cols-2  mt-10 gap-4">
         <div className="col-span-2 h-[210px] ">
           <Image
-            src={"/letsgo.jpg"}
+            src={"/letsgo.webp"}
             alt="helli"
             height={400}
             width={400}
@@ -143,7 +143,7 @@ const About = () => {
         </div>
         <div className="col-span-4  h-[210px] rounded-lg">
           <Image
-            src={"/people.jpg"}
+            src={"/people.webp"}
             alt="people"
             height={400}
             width={400}
@@ -154,7 +154,7 @@ const About = () => {
       <div className=" grid bottom-grid  md:grid-cols-6 grid-cols-2   gap-4 mt-4 ">
         <div className="col-span-4 h-[210px]">
           <Image
-            src={"/cocktails.jpg"}
+            src={"/cocktails.webp"}
             alt="people"
             height={400}
             width={400}
@@ -163,7 +163,7 @@ const About = () => {
         </div>
         <div className="col-span-2 h-[210px] ">
           <Image
-            src={"/cock.jpg"}
+            src={"/cock.webp"}
             alt="people"
             height={400}
             width={400}
