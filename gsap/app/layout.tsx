@@ -5,8 +5,8 @@ import "./globals.css";
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["400", "700"],
-  display: "swap", // ✅ Prevents blocking render
-  preload: true, // ✅ Preload font for performance
+  display: "swap", // Prevents blocking render
+  preload: true, // Preload font
 });
 
 export const metadata: Metadata = {
@@ -21,6 +21,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cinzel.className}>
+      <head>
+        {/* ✅ Preload the video for lightning-fast load */}
+        <link
+          rel="preload"
+          as="video"
+          href="/video-ap-optimized.mp4"
+          type="video/mp4"
+        />
+      </head>
       <body className="antialiased overflow-x-clip font-sans">{children}</body>
     </html>
   );
