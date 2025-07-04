@@ -126,6 +126,7 @@ const About = () => {
             alt="helli"
             height={400}
             width={400}
+            loading="lazy"
             className="h-full w-full object-cover rounded-lg"
           />
         </div>
@@ -147,6 +148,7 @@ const About = () => {
             alt="people"
             height={400}
             width={400}
+            loading="lazy"
             className="h-full w-full object-cover rounded-lg"
           />
         </div>
@@ -158,6 +160,7 @@ const About = () => {
             alt="people"
             height={400}
             width={400}
+            loading="lazy"
             className=" object-fill h-full w-full  rounded-lg"
           />
         </div>
@@ -167,6 +170,7 @@ const About = () => {
             alt="people"
             height={400}
             width={400}
+            loading="lazy"
             className="object-cover h-full w-full  rounded-lg"
           />
         </div>
