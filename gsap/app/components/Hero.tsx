@@ -140,7 +140,7 @@ const Hero = () => {
       </div>
       <div className="absolute video viideo py-10  inset-0 ">
         <video
-          src={"/video-ap-optimized.mp4"}
+          src={"/video-ap-superfast.mp4"}
           muted
           playsInline
           preload="auto"

@@ -21,15 +21,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cinzel.className}>
-      <head>
-        {/* ✅ Preload the video for lightning-fast load */}
-        <link
-          rel="preload"
-          as="video"
-          href="/video-ap-optimized.mp4"
-          type="video/mp4"
-        />
-      </head>
       <body className="antialiased overflow-x-clip font-sans">{children}</body>
     </html>
   );
