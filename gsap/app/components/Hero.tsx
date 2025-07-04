@@ -63,7 +63,7 @@ const Hero = () => {
           trigger: ".viideo",
           start: startValue,
           end: endValue,
-          scrub: true,
+          scrub: false,
           pin: true,
           anticipatePin: 1,
           onEnter: () => videoRef.current?.play(),
