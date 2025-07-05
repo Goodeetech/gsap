@@ -147,6 +147,7 @@ const Hero = () => {
           autoPlay
           loop
           ref={videoRef}
+          className="h-full w-full object-cover"
         />
       </div>
     </section>
