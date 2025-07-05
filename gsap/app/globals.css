@@ -27,3 +27,10 @@ body {
 .video {
   @apply w-full md:h-[80%] h-1/2 absolute bottom-0  left-0 md:object-contain -z-10 object-bottom object-cover;
 }
+
+.mask-image {
+  mask-image: url("/leaf3.png");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 50%;
+}
