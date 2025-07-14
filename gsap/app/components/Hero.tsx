@@ -19,128 +19,77 @@ const Hero: React.FC = () => {
   /* MAIN GSAP SETUP  */
   useGSAP(
     () => {
-      if (!container.current) return;
+      const video = videoRef.current;
+      if (!video) return;
 
-      /* -----------------------------------
-         1. Text intro (SplitText) - once
-      -------------------------------------*/
-      const titleSplit = new SplitText(".title", { type: "chars, words" });
-      const paragraphSplit = new SplitText(".hero-paragraph", {
-        type: "lines",
-      });
+      /* helpers */
+      const playVideo = () => {
+        if (video.readyState >= 2) {
+          video.play().catch(() => {});
+        }
+      };
+      const pauseVideo = () => !video.paused && video.pause();
 
-      gsap.set(".title, .hero-paragraph", { opacity: 1 });
+      /* modern matchMedia */
+      const mm = gsap.matchMedia();
 
-      gsap.from(titleSplit.chars, {
-        yPercent: 100,
-        opacity: 0,
-        duration: 1.8,
-        ease: "expo.out",
-        stagger: 0.05,
-      });
+      /* -------------- DESKTOP -------------- */
+      mm.add("(min-width: 768px)", () => {
+        /* pin + play / pause */
+        ScrollTrigger.create({
+          trigger: ".viideo",
+          start: "top top",
+          end: "bottom top",
+          pin: true,
+          anticipatePin: 1,
+          onEnter: playVideo,
+          onEnterBack: playVideo, // keep playing when re‑entering from bottom
+          onLeave: pauseVideo,
+          // no onLeaveBack so scrolling up into view keeps it playing
+        });
 
-      gsap.from(paragraphSplit.lines, {
-        yPercent: 100,
-        opacity: 0,
-        duration: 1.8,
-        ease: "expo.out",
-        stagger: 0.06,
-        delay: 1,
-      });
-
-      /* -----------------------------------
-         2. Leaves parallax (same for all)
-      -------------------------------------*/
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: container.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        })
-        .to(".right-leaf", { y: 200, rotation: 45, scale: 1.2 }, 0)
-        .to(".left-leaf", { y: -200, rotation: -45, scale: 1.2 }, 0);
-
-      /* -----------------------------------
-         3. Responsive video pin
-            ‑ use matchMedia so GSAP
-              tears down & rebuilds
-              when breakpoint flips.
-      -------------------------------------*/
-
-      ScrollTrigger.matchMedia({
-        // ≥ 768 px  (desktop)
-        "(min-width: 768px)": () => {
-          const tl = gsap.timeline({
+        /* scroll‑scrub to end only once metadata is ready */
+        const buildScrub = () =>
+          gsap.to(video, {
+            currentTime: video.duration,
             scrollTrigger: {
               trigger: ".viideo",
               start: "top top",
               end: "bottom top",
-              pin: true,
-              anticipatePin: 1,
-              onEnter: () => videoRef.current?.play(),
-              onEnterBack: () => videoRef.current?.play(),
-              onLeave: () => videoRef.current?.pause(),
+              scrub: true,
+              invalidateOnRefresh: true,
             },
           });
 
-          if (videoRef.current) {
-            videoRef.current.currentTime = 0;
-            tl.to(videoRef.current, {
-              currentTime: videoRef.current.duration,
-            });
-          }
-          return () => tl.kill(); // cleanup desktop timeline
-        },
-
-        // < 768 px  (mobile)
-        "(max-width: 767px)": () => {
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: ".viideo",
-              start: "top 50%",
-              end: "120% top",
-
-              pin: true,
-              anticipatePin: 1,
-              onEnter: () => videoRef.current?.play(),
-              onEnterBack: () => videoRef.current?.play(),
-              onLeave: () => videoRef.current?.pause(),
-              onLeaveBack: () => videoRef.current?.pause(),
-            },
-          });
-
-          if (videoRef.current) {
-            videoRef.current.currentTime = 0;
-            tl.to(videoRef.current, {
-              currentTime: videoRef.current.duration,
-            });
-          }
-          return () => tl.kill(); // cleanup mobile timeline
-        },
+        if (isFinite(video.duration)) buildScrub();
+        else video.addEventListener("loadedmetadata", buildScrub);
       });
 
-      /* -----------------------------------
-         OPTIONAL: refresh on every resize
-      -------------------------------------*/
+      /* -------------- MOBILE -------------- */
+      mm.add("(max-width: 767px)", () => {
+        ScrollTrigger.create({
+          trigger: ".viideo",
+          start: "top 50%",
+          end: "120% top",
+          pin: true,
+          anticipatePin: 1,
+          onEnter: playVideo,
+          onEnterBack: playVideo,
+          onLeave: pauseVideo,
+        });
+      });
+
+      /* refresh on viewport resize (safety) */
       const onResize = () => ScrollTrigger.refresh();
       window.addEventListener("resize", onResize);
 
-      /* CLEANUP (ctx.revert() tears down
-         every GSAP instance created in
-         this hook, plus our resize listener)
-      -------------------------------------*/
+      /* cleanup */
       return () => {
         window.removeEventListener("resize", onResize);
-        titleSplit.revert();
-        paragraphSplit.revert();
-        ScrollTrigger.killAll(); // safety
+        mm.revert(); // kills only the triggers in this component
       };
     },
     { scope: container }
-    // ⚠ No dependency array needed; matchMedia handles breakpoints
   );
 
   /* -------------------------------------------------- */
