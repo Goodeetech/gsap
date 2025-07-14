@@ -10,7 +10,7 @@ import { SplitText, ScrollTrigger } from "gsap/all";
 const Art = () => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   useGSAP(() => {
-    const start = isMobile ? "top 40%" : "top top";
+    const start = isMobile ? "top 10%" : "top top";
     const yPercent = isMobile ? "" : "-80";
     const maskTimeline = gsap.timeline({
       scrollTrigger: {
@@ -74,7 +74,7 @@ const Art = () => {
             />
           </div>
         </div>
-        <div className="md:hidden mt-40   opacity-0  masked text-center">
+        <div className="md:hidden mt-20   opacity-0  masked text-center">
           <h3 className="md:text-3xl font-semibold text-md">
             Made with Craft, Poured with Passion
           </h3>

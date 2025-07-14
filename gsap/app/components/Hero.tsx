@@ -1,47 +1,56 @@
 "use client";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { SplitText, ScrollTrigger } from "gsap/all";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+import gsap from "gsap";
+import { ScrollTrigger, SplitText } from "gsap/all";
+import { useGSAP } from "@gsap/react";
 
-const Hero = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+gsap.registerPlugin(ScrollTrigger, SplitText);
+
+const Hero: React.FC = () => {
   const container = useRef<HTMLDivElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const videoTimeLineRef = useRef<gsap.core.Timeline | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  /* react‑responsive flips automatically when DevTools width changes */
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  /* MAIN GSAP SETUP  */
   useGSAP(
     () => {
       if (!container.current) return;
 
-      const heroSplit = new SplitText(".title", { type: "chars, words" });
+      /* -----------------------------------
+         1. Text intro (SplitText) - once
+      -------------------------------------*/
+      const titleSplit = new SplitText(".title", { type: "chars, words" });
       const paragraphSplit = new SplitText(".hero-paragraph", {
         type: "lines",
       });
 
-      gsap.set(".title", { opacity: 1 });
-      gsap.set(".hero-paragraph", { opacity: 1 });
+      gsap.set(".title, .hero-paragraph", { opacity: 1 });
 
-      gsap.from(heroSplit.chars, {
+      gsap.from(titleSplit.chars, {
         yPercent: 100,
-        duration: 1.8,
         opacity: 0,
+        duration: 1.8,
         ease: "expo.out",
         stagger: 0.05,
       });
+
       gsap.from(paragraphSplit.lines, {
-        opacity: 0,
         yPercent: 100,
+        opacity: 0,
         duration: 1.8,
         ease: "expo.out",
         stagger: 0.06,
         delay: 1,
       });
 
+      /* -----------------------------------
+         2. Leaves parallax (same for all)
+      -------------------------------------*/
       gsap
         .timeline({
           scrollTrigger: {
@@ -52,102 +61,146 @@ const Hero = () => {
           },
         })
         .to(".right-leaf", { y: 200, rotation: 45, scale: 1.2 }, 0)
-
         .to(".left-leaf", { y: -200, rotation: -45, scale: 1.2 }, 0);
 
-      const startValue = isMobile ? "top 50%" : "top top ";
-      const endValue = isMobile ? "120% top" : "bottom top";
+      /* -----------------------------------
+         3. Responsive video pin
+            ‑ use matchMedia so GSAP
+              tears down & rebuilds
+              when breakpoint flips.
+      -------------------------------------*/
+      ScrollTrigger.matchMedia({
+        // ≥ 768 px  (desktop)
+        "(min-width: 768px)": () => {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: ".viideo",
+              start: "top top",
+              end: "bottom top",
+              pin: true,
+              anticipatePin: 1,
+              onEnter: () => videoRef.current?.play(),
+              onEnterBack: () => videoRef.current?.play(),
+              onLeave: () => videoRef.current?.pause(),
+            },
+          });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".viideo",
-          start: startValue,
-          end: endValue,
-          scrub: false,
-          pin: true,
-          anticipatePin: 1,
-          onEnter: () => videoRef.current?.play(),
-          onEnterBack: () => videoRef.current?.play(),
-          onLeave: () => videoRef.current?.pause(),
-          onLeaveBack: () => videoRef.current?.pause(),
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            tl.to(videoRef.current, {
+              currentTime: videoRef.current.duration,
+            });
+          }
+          return () => tl.kill(); // cleanup desktop timeline
+        },
+
+        // < 768 px  (mobile)
+        "(max-width: 767px)": () => {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: ".viideo",
+              start: "top 50%",
+              end: "120% top",
+
+              pin: true,
+              anticipatePin: 1,
+              onEnter: () => videoRef.current?.play(),
+              onEnterBack: () => videoRef.current?.play(),
+              onLeave: () => videoRef.current?.pause(),
+              onLeaveBack: () => videoRef.current?.pause(),
+            },
+          });
+
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            tl.to(videoRef.current, {
+              currentTime: videoRef.current.duration,
+            });
+          }
+          return () => tl.kill(); // cleanup mobile timeline
         },
       });
 
-      if (videoRef.current) {
-        videoRef.current.currentTime = 0;
-        videoRef.current.onloadedmetadata = () => {
-          tl.to(videoRef.current, {
-            currentTime: videoRef.current?.duration,
-          });
-        };
-      }
+      /* -----------------------------------
+         OPTIONAL: refresh on every resize
+      -------------------------------------*/
+      const onResize = () => ScrollTrigger.refresh();
+      window.addEventListener("resize", onResize);
+
+      /* CLEANUP (ctx.revert() tears down
+         every GSAP instance created in
+         this hook, plus our resize listener)
+      -------------------------------------*/
+      return () => {
+        window.removeEventListener("resize", onResize);
+        titleSplit.revert();
+        paragraphSplit.revert();
+        ScrollTrigger.killAll(); // safety
+      };
     },
     { scope: container }
+    // ⚠ No dependency array needed; matchMedia handles breakpoints
   );
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
+  /* -------------------------------------------------- */
+  /* JSX  (unchanged formatting, classes simplified)    */
+  /* -------------------------------------------------- */
   return (
-    <section ref={container} id="hero" className="md:mt-8 -z-10 mt-20">
-      <div className=" h-[calc(100vh-3rem)]">
-        <h1 className="md:text-9xl text-5xl title  tracking-wide pt-16 md:pt-20 text-center font-semibold opacity-0 z-14">
+    <section ref={container} id="hero" className="relative mt-20 md:mt-8 -z-10">
+      <div className="h-[calc(100vh-3rem)]">
+        <h1 className="title opacity-0 pt-16 md:pt-20 text-center font-semibold z-10 tracking-wide text-5xl md:text-9xl">
           BOTANIQ
         </h1>
 
-        <p className="text-sm mx-auto pt-18 md:hidden text-white/90 hero-paragraph leading-relaxed px-4  max-w-lg opacity-0">
-          Indulge in a symphony of flavor where every cocktail is more than a
-          drink—it's a crafted experience. At Velvet Pour, we blend the finest
-          ingredients, timeless recipes, and a touch of creative rebellion to
-          serve up moments worth savoring. Whether you're sipping at sunset or
-          dancing into the night, your perfect pour begins here.
+        <p className="hero-paragraph opacity-0 mx-auto px-4 max-w-lg leading-relaxed z-10 text-sm text-white/90 md:hidden">
+          Indulge in a symphony&nbsp;of flavor where every cocktail is more than
+          a drink—it's a crafted experience.&nbsp;…
         </p>
 
+        {/* leaves */}
         <Image
-          src={"/leaf2.png"}
+          src="/leaf2.png"
           alt="leaf"
-          width={200}
-          height={200}
-          className="bottom-8 absolute  left-leaf -left-12 md:top-12 md:w-[400px]"
+          width={400}
+          height={400}
+          className="left-leaf absolute z-10 -left-12 bottom-8 md:top-12"
         />
-
         <Image
-          src={"/leaf5.png"}
+          src="/leaf5.png"
           alt="leaf3"
-          width={200}
-          height={200}
-          className="absolute bottom-32 right-leaf -right-12 md:w-[300px]  md:-right-20"
+          width={300}
+          height={300}
+          className="right-leaf absolute z-10 -right-12 bottom-32 md:-right-20"
         />
 
-        <div className=" ">
-          <div className="absolute hidden lg:block w-fit lg:bottom-26 lg:left-4 pl-6 hero-paragraph opacity-0">
-            <p>Cool. Crisp. Classic</p>
-            <p className="font-semibold text-4xl text-yellow-100 max-w-md">
-              Sip the Spirit of Summer
-            </p>
-          </div>
-        </div>
-
-        <div className="absolute font-light hidden lg:block w-fit lg:right-0  z-13 lg:bottom-16 p-6 ">
-          <p className="text-white max-w-md hero-paragraph opacity-0">
-            Every cocktail on our menu is a blend of premium ingredient,
-            creative flair, and timless recipe. <br />
-            -designed to delight your senses
+        {/* desktop paragraphs */}
+        <div className="hero-paragraph opacity-0 absolute hidden lg:block left-4 bottom-26 p-6">
+          <p>Cool. Crisp. Classic</p>
+          <p className="text-yellow-100 font-semibold text-4xl">
+            Sip the Spirit of Summer
           </p>
-
-          <p className="text-sm mt-4">View cocktail</p>
+        </div>
+        <div className="hero-paragraph opacity-0 absolute hidden lg:block right-0 bottom-16 p-6">
+          <p className="text-white max-w-md">
+            Every cocktail on our menu is a blend of premium ingredients,
+            creative flair, and timeless recipes—designed to delight your
+            senses.
+          </p>
+          <p className="mt-4 text-sm">View cocktails</p>
         </div>
       </div>
-      <div className="absolute video viideo py-10  inset-0 ">
+
+      {/* video (pinned) */}
+      <div className="viideo absolute -z-10 inset-0 py-10">
         <video
+          ref={videoRef}
           src="/video-ap-superfast.mp4"
           muted
           playsInline
           preload="auto"
-          autoPlay
           loop
-          ref={videoRef}
-          className=""
+          autoPlay
+          className="w-full h-full object-cover"
         />
       </div>
     </section>
