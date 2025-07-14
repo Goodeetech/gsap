@@ -21,7 +21,7 @@ const Menu: React.FC = () => {
   const next = getCocktailAt(1);
 
   return (
-    <div className="mx-12 py-16">
+    <div className="mx-12 md:py-16">
       {/* ---------- TOP NAV (titles) ---------- */}
       <nav className="flex justify-center">
         <div className="grid grid-cols-2  md:grid-cols-5 gap-8">
@@ -29,7 +29,7 @@ const Menu: React.FC = () => {
             <button
               key={item.id}
               onClick={() => goToSlide(idx)}
-              className={`border-b ${
+              className={`border-b text-center ${
                 idx === currentIndex
                   ? "border-b-white text-white"
                   : "border-b-white/50 text-white/60"
@@ -46,17 +46,17 @@ const Menu: React.FC = () => {
         {/* left arrow */}
         <button
           aria-label="Previous cocktail"
-          className="absolute left-0 top-0 flex items-center gap-2 cursor-pointer"
+          className="absolute left-0 top-3 flex items-center gap-2 cursor-pointer "
           onClick={() => goToSlide(currentIndex - 1)}
         >
           <ArrowLeft />
-          <span className="hidden md:inline">{prev.title}</span>
+          <h1 className="hidden md:inline">{prev.title}</h1>
         </button>
 
         {/* right arrow */}
         <button
           aria-label="Next cocktail"
-          className="absolute right-0 top-0 flex items-center gap-2 cursor-pointer"
+          className="absolute right-0 top-3 flex items-center gap-2 cursor-pointer"
           onClick={() => goToSlide(currentIndex + 1)}
         >
           <span className="hidden md:inline">{next.title}</span>

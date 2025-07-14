@@ -10,7 +10,7 @@ import { SplitText, ScrollTrigger } from "gsap/all";
 const Art = () => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   useGSAP(() => {
-    const start = isMobile ? "top 10%" : "top top";
+    const start = isMobile ? "top center" : "top top";
     const yPercent = isMobile ? "" : "-80";
     const maskTimeline = gsap.timeline({
       scrollTrigger: {
@@ -56,7 +56,7 @@ const Art = () => {
     "Freshly muddles flavors",
   ];
   return (
-    <div id="art" className="mx-6 relative py-28 mt-20 h-full">
+    <div id="art" className="mx-6 md:py-30 md:mt-8 relative h-full">
       <div className="">
         <div className="relative flex items-center flex-col justify-center h-64">
           <h2 className="text-center lg:text-[200px] md:text-5xl text-5xl font-bold text-gray-400 z-10 tracking-wider will-fade">
@@ -64,7 +64,7 @@ const Art = () => {
           </h2>
           {/* Radial glow */}
           <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_transparent_90%)] blur-2xl pointer-events-none z-0"></span>
-          <div className=" w-full h-[500px] absolute rounded-lg  z-10">
+          <div className=" w-full h-[500px] mt-60 md:mt-0 absolute rounded-lg  z-10">
             <Image
               src="/letsgo.webp"
               alt="image"
@@ -74,11 +74,11 @@ const Art = () => {
             />
           </div>
         </div>
-        <div className="md:hidden mt-20   opacity-0  masked text-center">
-          <h3 className="md:text-3xl font-semibold text-md">
+        <div className="md:hidden mt-46   opacity-0  masked text-center max-w-xl">
+          <h3 className="md:text-3xl font-semibold text-lg ">
             Made with Craft, Poured with Passion
           </h3>
-          <p className="text-sm md:text-md">
+          <p className="text-md md:text-md">
             This isn't just a drink. It's a carefully crafted moment made just
             for you.
           </p>
