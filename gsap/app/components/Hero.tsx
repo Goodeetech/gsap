@@ -22,20 +22,25 @@ const Hero: React.FC = () => {
       const video = videoRef.current;
       if (!video) return;
 
-      /* helpers */
       const playVideo = () => {
         if (video.readyState >= 2) {
           video.play().catch(() => {});
+        } else {
+          const handleLoaded = () => {
+            video.play().catch(() => {});
+            video.removeEventListener("loadedmetadata", handleLoaded);
+          };
+          video.addEventListener("loadedmetadata", handleLoaded);
         }
       };
-      const pauseVideo = () => !video.paused && video.pause();
 
-      /* modern matchMedia */
+      const pauseVideo = () => {
+        if (!video.paused) video.pause();
+      };
+
       const mm = gsap.matchMedia();
 
-      /* -------------- DESKTOP -------------- */
       mm.add("(min-width: 768px)", () => {
-        /* pin + play / pause */
         ScrollTrigger.create({
           trigger: ".viideo",
           start: "top top",
@@ -43,29 +48,11 @@ const Hero: React.FC = () => {
           pin: true,
           anticipatePin: 1,
           onEnter: playVideo,
-          onEnterBack: playVideo, // keep playing when re‑entering from bottom
+          onEnterBack: playVideo,
           onLeave: pauseVideo,
-          // no onLeaveBack so scrolling up into view keeps it playing
         });
-
-        /* scroll‑scrub to end only once metadata is ready */
-        const buildScrub = () =>
-          gsap.to(video, {
-            currentTime: video.duration,
-            scrollTrigger: {
-              trigger: ".viideo",
-              start: "top top",
-              end: "bottom top",
-              scrub: true,
-              invalidateOnRefresh: true,
-            },
-          });
-
-        if (isFinite(video.duration)) buildScrub();
-        else video.addEventListener("loadedmetadata", buildScrub);
       });
 
-      /* -------------- MOBILE -------------- */
       mm.add("(max-width: 767px)", () => {
         ScrollTrigger.create({
           trigger: ".viideo",
@@ -79,14 +66,8 @@ const Hero: React.FC = () => {
         });
       });
 
-      /* refresh on viewport resize (safety) */
-      const onResize = () => ScrollTrigger.refresh();
-      window.addEventListener("resize", onResize);
-
-      /* cleanup */
       return () => {
-        window.removeEventListener("resize", onResize);
-        mm.revert(); // kills only the triggers in this component
+        mm.revert();
       };
     },
     { scope: container }
