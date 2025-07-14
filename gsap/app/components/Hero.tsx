@@ -69,6 +69,7 @@ const Hero: React.FC = () => {
               tears down & rebuilds
               when breakpoint flips.
       -------------------------------------*/
+
       ScrollTrigger.matchMedia({
         // ≥ 768 px  (desktop)
         "(min-width: 768px)": () => {
