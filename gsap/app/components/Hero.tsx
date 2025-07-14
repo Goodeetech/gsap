@@ -22,6 +22,45 @@ const Hero: React.FC = () => {
       const video = videoRef.current;
       if (!video) return;
 
+      const titleSplit = new SplitText(".title", { type: "chars, words" });
+      const paragraphSplit = new SplitText(".hero-paragraph", {
+        type: "lines",
+      });
+
+      gsap.set(".title, .hero-paragraph", { opacity: 1 });
+
+      gsap.from(titleSplit.chars, {
+        yPercent: 100,
+        opacity: 0,
+        duration: 1.8,
+        ease: "expo.out",
+        stagger: 0.05,
+      });
+
+      gsap.from(paragraphSplit.lines, {
+        yPercent: 100,
+        opacity: 0,
+        duration: 1.8,
+        ease: "expo.out",
+        stagger: 0.06,
+        delay: 1,
+      });
+
+      /* -----------------------------------
+         2. Leaves parallax (same for all)
+      -------------------------------------*/
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: container.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        })
+        .to(".right-leaf", { y: 200, rotation: 45, scale: 1.2 }, 0)
+        .to(".left-leaf", { y: -200, rotation: -45, scale: 1.2 }, 0);
+
       const playVideo = () => {
         if (video.readyState >= 2) {
           video.play().catch(() => {});

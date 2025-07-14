@@ -49,7 +49,7 @@ const Menu: React.FC = () => {
             <button
               key={item.id}
               onClick={() => goToSlide(idx)}
-              className={`border-b text-center ${
+              className={`border-b text-center cursor-pointer ${
                 idx === currentIndex
                   ? "border-b-white active-item text-white"
                   : "border-b-white/50 text-white/60"
