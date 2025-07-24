@@ -1,22 +1,26 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import Image from "next/image";
 import { useMediaQuery } from "react-responsive";
 
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import { useGSAP } from "@gsap/react";
+import { AnimationContext } from "@/lib/animationContext";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const Hero: React.FC = () => {
   const container = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { loadingAnimation, setLoadingAnimation } =
+    useContext(AnimationContext);
 
   /* react‑responsive flips automatically when DevTools width changes */
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   /* MAIN GSAP SETUP  */
+
   useGSAP(
     () => {
       const video = videoRef.current;

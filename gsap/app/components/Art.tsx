@@ -5,7 +5,6 @@ import { CheckCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
-import { SplitText, ScrollTrigger } from "gsap/all";
 
 const Art = () => {
   const isMobile = useMediaQuery({ maxWidth: 767 });

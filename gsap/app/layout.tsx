@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel } from "next/font/google";
 import "./globals.css";
+import AnimationProvider from "./provider";
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -21,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cinzel.className}>
-      <body className="antialiased overflow-x-clip font-sans">{children}</body>
+      <body className="antialiased overflow-x-clip font-sans">
+        <AnimationProvider>{children} </AnimationProvider>
+      </body>
     </html>
   );
 }
